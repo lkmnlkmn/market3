@@ -1,0 +1,228 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: μVision V5.26.2.0
+Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 QAQ, 1, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.26.2.0
+Toolchain Path:  D:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.26.2.0
+Dialog DLL:      DCM.DLL V1.17.2.0
+Target DLL:      Segger\JL2CM3.dll V2.99.31.0
+Dialog DLL:      TCM.DLL V1.36.1.0
+ 
+<h2>Project:</h2>
+G:\超3\超3购物机器人\购物机器人V6.0S\Project\购物机器人V6.0S.uvprojx
+Project File Date:  07/15/2021
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'TIM'
+assembling startup_stm32f103xe.s...
+compiling stm32f1xx_hal_cec.c...
+compiling stm32f1xx_hal_cortex.c...
+compiling stm32f1xx_hal.c...
+compiling stm32f1xx_hal_can.c...
+compiling system_stm32f1xx.c...
+compiling stm32f1xx_hal_adc_ex.c...
+compiling stm32f1xx_hal_adc.c...
+compiling stm32f1xx_hal_crc.c...
+compiling stm32f1xx_hal_eth.c...
+compiling stm32f1xx_hal_dac_ex.c...
+compiling stm32f1xx_hal_flash_ex.c...
+compiling stm32f1xx_hal_dac.c...
+compiling stm32f1xx_hal_flash.c...
+compiling stm32f1xx_hal_dma.c...
+compiling stm32f1xx_hal_hcd.c...
+compiling stm32f1xx_hal_gpio_ex.c...
+compiling stm32f1xx_hal_iwdg.c...
+compiling stm32f1xx_hal_irda.c...
+compiling stm32f1xx_hal_gpio.c...
+compiling stm32f1xx_hal_i2s.c...
+compiling stm32f1xx_hal_i2c.c...
+compiling stm32f1xx_hal_pccard.c...
+compiling stm32f1xx_hal_pcd_ex.c...
+compiling stm32f1xx_hal_mmc.c...
+compiling stm32f1xx_hal_pcd.c...
+compiling stm32f1xx_hal_pwr.c...
+compiling stm32f1xx_hal_nor.c...
+compiling stm32f1xx_hal_nand.c...
+compiling stm32f1xx_hal_smartcard.c...
+compiling stm32f1xx_hal_rtc_ex.c...
+compiling stm32f1xx_hal_rcc_ex.c...
+compiling stm32f1xx_hal_rtc.c...
+compiling stm32f1xx_hal_spi.c...
+compiling stm32f1xx_hal_sd.c...
+compiling stm32f1xx_hal_rcc.c...
+compiling stm32f1xx_hal_wwdg.c...
+compiling stm32f1xx_hal_sram.c...
+compiling stm32f1xx_hal_uart.c...
+compiling stm32f1xx_hal_usart.c...
+compiling stm32f1xx_ll_fsmc.c...
+compiling stm32f1xx_hal_tim_ex.c...
+compiling stm32f1xx_hal_tim.c...
+compiling bsp_vision.c...
+..\User\./wondercam/bsp_wondercam.h(124): warning:  #1295-D: Deprecated declaration anyFaceDetected - give arg types
+      bool anyFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(125): warning:  #1295-D: Deprecated declaration numOfTotalFaceDetected - give arg types
+      int numOfTotalFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(126): warning:  #1295-D: Deprecated declaration anyLearnedFaceDetected - give arg types
+      bool anyLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(127): warning:  #1295-D: Deprecated declaration numOfTotalLearnedFaceDetected - give arg types
+      int numOfTotalLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(128): warning:  #1295-D: Deprecated declaration anyUnlearnedFaceDetected - give arg types
+      bool anyUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(129): warning:  #1295-D: Deprecated declaration numOfTotalUnlearnedFaceDetected - give arg types
+      int numOfTotalUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(135): warning:  #1295-D: Deprecated declaration anyObjDetected - give arg types
+      bool anyObjDetected();
+..\User\./wondercam/bsp_wondercam.h(136): warning:  #1295-D: Deprecated declaration numOfObjDetected - give arg types
+      int numOfObjDetected();
+..\User\./wondercam/bsp_wondercam.h(142): warning:  #1295-D: Deprecated declaration classIdOfMaxProb - give arg types
+      int classIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(143): warning:  #1295-D: Deprecated declaration classMaxProb - give arg types
+      float classMaxProb();
+..\User\./wondercam/bsp_wondercam.h(147): warning:  #1295-D: Deprecated declaration featureIdOfMaxProb - give arg types
+      int featureIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(148): warning:  #1295-D: Deprecated declaration featureMaxProb - give arg types
+      float featureMaxProb();
+..\User\vision\bsp_vision.c: 12 warnings, 0 errors
+compiling stm32f1xx_it.c...
+compiling stm32f1xx_ll_sdmmc.c...
+compiling bsp_action.c...
+..\User\./wondercam/bsp_wondercam.h(124): warning:  #1295-D: Deprecated declaration anyFaceDetected - give arg types
+      bool anyFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(125): warning:  #1295-D: Deprecated declaration numOfTotalFaceDetected - give arg types
+      int numOfTotalFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(126): warning:  #1295-D: Deprecated declaration anyLearnedFaceDetected - give arg types
+      bool anyLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(127): warning:  #1295-D: Deprecated declaration numOfTotalLearnedFaceDetected - give arg types
+      int numOfTotalLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(128): warning:  #1295-D: Deprecated declaration anyUnlearnedFaceDetected - give arg types
+      bool anyUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(129): warning:  #1295-D: Deprecated declaration numOfTotalUnlearnedFaceDetected - give arg types
+      int numOfTotalUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(135): warning:  #1295-D: Deprecated declaration anyObjDetected - give arg types
+      bool anyObjDetected();
+..\User\./wondercam/bsp_wondercam.h(136): warning:  #1295-D: Deprecated declaration numOfObjDetected - give arg types
+      int numOfObjDetected();
+..\User\./wondercam/bsp_wondercam.h(142): warning:  #1295-D: Deprecated declaration classIdOfMaxProb - give arg types
+      int classIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(143): warning:  #1295-D: Deprecated declaration classMaxProb - give arg types
+      float classMaxProb();
+..\User\./wondercam/bsp_wondercam.h(147): warning:  #1295-D: Deprecated declaration featureIdOfMaxProb - give arg types
+      int featureIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(148): warning:  #1295-D: Deprecated declaration featureMaxProb - give arg types
+      float featureMaxProb();
+..\User\action\bsp_action.c: 12 warnings, 0 errors
+compiling main.c...
+..\User\./wondercam/bsp_wondercam.h(124): warning:  #1295-D: Deprecated declaration anyFaceDetected - give arg types
+      bool anyFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(125): warning:  #1295-D: Deprecated declaration numOfTotalFaceDetected - give arg types
+      int numOfTotalFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(126): warning:  #1295-D: Deprecated declaration anyLearnedFaceDetected - give arg types
+      bool anyLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(127): warning:  #1295-D: Deprecated declaration numOfTotalLearnedFaceDetected - give arg types
+      int numOfTotalLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(128): warning:  #1295-D: Deprecated declaration anyUnlearnedFaceDetected - give arg types
+      bool anyUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(129): warning:  #1295-D: Deprecated declaration numOfTotalUnlearnedFaceDetected - give arg types
+      int numOfTotalUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(135): warning:  #1295-D: Deprecated declaration anyObjDetected - give arg types
+      bool anyObjDetected();
+..\User\./wondercam/bsp_wondercam.h(136): warning:  #1295-D: Deprecated declaration numOfObjDetected - give arg types
+      int numOfObjDetected();
+..\User\./wondercam/bsp_wondercam.h(142): warning:  #1295-D: Deprecated declaration classIdOfMaxProb - give arg types
+      int classIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(143): warning:  #1295-D: Deprecated declaration classMaxProb - give arg types
+      float classMaxProb();
+..\User\./wondercam/bsp_wondercam.h(147): warning:  #1295-D: Deprecated declaration featureIdOfMaxProb - give arg types
+      int featureIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(148): warning:  #1295-D: Deprecated declaration featureMaxProb - give arg types
+      float featureMaxProb();
+..\User\main.c: 12 warnings, 0 errors
+compiling stm32f1xx_ll_usb.c...
+compiling bsp_path.c...
+..\User\./wondercam/bsp_wondercam.h(124): warning:  #1295-D: Deprecated declaration anyFaceDetected - give arg types
+      bool anyFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(125): warning:  #1295-D: Deprecated declaration numOfTotalFaceDetected - give arg types
+      int numOfTotalFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(126): warning:  #1295-D: Deprecated declaration anyLearnedFaceDetected - give arg types
+      bool anyLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(127): warning:  #1295-D: Deprecated declaration numOfTotalLearnedFaceDetected - give arg types
+      int numOfTotalLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(128): warning:  #1295-D: Deprecated declaration anyUnlearnedFaceDetected - give arg types
+      bool anyUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(129): warning:  #1295-D: Deprecated declaration numOfTotalUnlearnedFaceDetected - give arg types
+      int numOfTotalUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(135): warning:  #1295-D: Deprecated declaration anyObjDetected - give arg types
+      bool anyObjDetected();
+..\User\./wondercam/bsp_wondercam.h(136): warning:  #1295-D: Deprecated declaration numOfObjDetected - give arg types
+      int numOfObjDetected();
+..\User\./wondercam/bsp_wondercam.h(142): warning:  #1295-D: Deprecated declaration classIdOfMaxProb - give arg types
+      int classIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(143): warning:  #1295-D: Deprecated declaration classMaxProb - give arg types
+      float classMaxProb();
+..\User\./wondercam/bsp_wondercam.h(147): warning:  #1295-D: Deprecated declaration featureIdOfMaxProb - give arg types
+      int featureIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(148): warning:  #1295-D: Deprecated declaration featureMaxProb - give arg types
+      float featureMaxProb();
+..\User\path\bsp_path.c: 12 warnings, 0 errors
+compiling bsp_dial.c...
+..\User\./wondercam/bsp_wondercam.h(124): warning:  #1295-D: Deprecated declaration anyFaceDetected - give arg types
+      bool anyFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(125): warning:  #1295-D: Deprecated declaration numOfTotalFaceDetected - give arg types
+      int numOfTotalFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(126): warning:  #1295-D: Deprecated declaration anyLearnedFaceDetected - give arg types
+      bool anyLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(127): warning:  #1295-D: Deprecated declaration numOfTotalLearnedFaceDetected - give arg types
+      int numOfTotalLearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(128): warning:  #1295-D: Deprecated declaration anyUnlearnedFaceDetected - give arg types
+      bool anyUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(129): warning:  #1295-D: Deprecated declaration numOfTotalUnlearnedFaceDetected - give arg types
+      int numOfTotalUnlearnedFaceDetected();
+..\User\./wondercam/bsp_wondercam.h(135): warning:  #1295-D: Deprecated declaration anyObjDetected - give arg types
+      bool anyObjDetected();
+..\User\./wondercam/bsp_wondercam.h(136): warning:  #1295-D: Deprecated declaration numOfObjDetected - give arg types
+      int numOfObjDetected();
+..\User\./wondercam/bsp_wondercam.h(142): warning:  #1295-D: Deprecated declaration classIdOfMaxProb - give arg types
+      int classIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(143): warning:  #1295-D: Deprecated declaration classMaxProb - give arg types
+      float classMaxProb();
+..\User\./wondercam/bsp_wondercam.h(147): warning:  #1295-D: Deprecated declaration featureIdOfMaxProb - give arg types
+      int featureIdOfMaxProb();
+..\User\./wondercam/bsp_wondercam.h(148): warning:  #1295-D: Deprecated declaration featureMaxProb - give arg types
+      float featureMaxProb();
+..\User\dial\bsp_dial.c(238): warning:  #940-D: missing return statement at end of non-void function "for_delay" 
+  }
+..\User\dial\bsp_dial.c: 13 warnings, 0 errors
+linking...
+Program Size: Code=24796 RO-data=360 RW-data=116 ZI-data=2308  
+FromELF: creating hex file...
+"..\Output\Vince_F103ZE.axf" - 0 Error(s), 61 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.3.0.pack
+                Keil.STM32F1xx_DFP.2.3.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_TIM
+  D:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.3.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:02:07
+</pre>
+</body>
+</html>

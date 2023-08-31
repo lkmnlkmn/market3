@@ -1,0 +1,746 @@
+/**
+  ******************************************************************************
+  * @file     bsp_trailing.c
+  * @Debugger 林文豪
+  * @version  V1.5
+  * @date     2021-5-24
+  * @brief    循迹功能实现
+  ******************************************************************************
+  * @attention
+  *
+  * 实验平台:裘老板画的主控板  
+  *
+  ******************************************************************************
+  */ 
+
+#include "./trailing/bsp_trailing.h"
+#include ".\motor_control\bsp_motor_control.h"
+#include <stdio.h>
+
+int icount_Head = 0,icount_Left = 0,icount_Right = 0, icount_edge = 0, icount_back = 0;//用到的标志位
+int j=0;
+int Trailing_data[4][8];
+int i_step=0;
+
+void TRAILING_GPIO_Config(void)
+{				
+    /*定义一个GPIO_InitTypeDef类型的结构体*/
+    GPIO_InitTypeDef  GPIO_InitStruct;
+
+    /*开启循迹相关的GPIO外设时钟*/
+    Trailing_A_GPIO_CLK_ENABLE();
+    Trailing_B_GPIO_CLK_ENABLE();
+    Trailing_D_GPIO_CLK_ENABLE();
+    Trailing_E_GPIO_CLK_ENABLE();
+		Trailing_F_GPIO_CLK_ENABLE();
+		Trailing_G_GPIO_CLK_ENABLE();
+
+    /*设置引脚的输出类型为上拉输入*/
+    GPIO_InitStruct.Mode  = GPIO_MODE_INPUT; 
+    /*设置引脚速率为高速 */   
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	
+    /*初始化--头部循迹1--的GPIO引脚*/															   
+    GPIO_InitStruct.Pin = Tra_H_Pin_0;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_0, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_H_Pin_1;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_1, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_H_Pin_2;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_2, &GPIO_InitStruct);												   
+    GPIO_InitStruct.Pin = Tra_H_Pin_3;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_3, &GPIO_InitStruct);								   
+    GPIO_InitStruct.Pin = Tra_H_Pin_4;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_4, &GPIO_InitStruct);															   
+    GPIO_InitStruct.Pin = Tra_H_Pin_5;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_5, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_H_Pin_6;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_6, &GPIO_InitStruct);										
+    GPIO_InitStruct.Pin = Tra_H_Pin_7;	
+    HAL_GPIO_Init(Tra_H_GPIO_Port_7, &GPIO_InitStruct);
+		
+		 /*初始化--尾部循迹2--的GPIO引脚*/															   
+    GPIO_InitStruct.Pin = Tra_B_Pin_0;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_0, &GPIO_InitStruct);															   
+    GPIO_InitStruct.Pin = Tra_B_Pin_1;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_1, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_B_Pin_2;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_2, &GPIO_InitStruct);													   
+    GPIO_InitStruct.Pin = Tra_B_Pin_3;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_3, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_B_Pin_4;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_4, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_B_Pin_5;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_5, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_B_Pin_6;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_6, &GPIO_InitStruct);										
+    GPIO_InitStruct.Pin = Tra_B_Pin_7;	
+    HAL_GPIO_Init(Tra_B_GPIO_Port_7, &GPIO_InitStruct);
+		
+		/*初始化--左侧循迹--的GPIO引脚*/
+		GPIO_InitStruct.Pin = Tra_L_Pin_0;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_0, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_L_Pin_1;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_1, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_L_Pin_2;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_2, &GPIO_InitStruct);												   
+    GPIO_InitStruct.Pin = Tra_L_Pin_3;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_3, &GPIO_InitStruct);				
+    GPIO_InitStruct.Pin = Tra_L_Pin_4;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_4, &GPIO_InitStruct);															   
+    GPIO_InitStruct.Pin = Tra_L_Pin_5;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_5, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_L_Pin_6;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_6, &GPIO_InitStruct);										
+    GPIO_InitStruct.Pin = Tra_L_Pin_7;	
+    HAL_GPIO_Init(Tra_L_GPIO_Port_7, &GPIO_InitStruct);		
+
+		/*初始化--右侧循迹--的GPIO引脚*/
+		GPIO_InitStruct.Pin = Tra_R_Pin_0;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_0, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_R_Pin_1;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_1, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_R_Pin_2;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_2, &GPIO_InitStruct);												   
+    GPIO_InitStruct.Pin = Tra_R_Pin_3;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_3, &GPIO_InitStruct);				
+    GPIO_InitStruct.Pin = Tra_R_Pin_4;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_4, &GPIO_InitStruct);															   
+    GPIO_InitStruct.Pin = Tra_R_Pin_5;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_5, &GPIO_InitStruct);														   
+    GPIO_InitStruct.Pin = Tra_R_Pin_6;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_6, &GPIO_InitStruct);										
+    GPIO_InitStruct.Pin = Tra_R_Pin_7;	
+    HAL_GPIO_Init(Tra_R_GPIO_Port_7, &GPIO_InitStruct);		
+
+}
+
+/**
+  * @brief 储存红外循迹模块的数据到一个二维数组
+  * @param huart: UART handle
+  * @retval 无
+  */
+
+void scanf_trailing_data()
+{
+	{	//头前(head)循迹模块
+		{	Trailing_data[0][0]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_0,Tra_H_Pin_0);
+			Trailing_data[0][1]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_1,Tra_H_Pin_1);
+			Trailing_data[0][2]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_2,Tra_H_Pin_2);
+			Trailing_data[0][3]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_3,Tra_H_Pin_3);
+			Trailing_data[0][4]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_4,Tra_H_Pin_4);
+			Trailing_data[0][5]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_5,Tra_H_Pin_5);
+			Trailing_data[0][6]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_6,Tra_H_Pin_6);
+			Trailing_data[0][7]=HAL_GPIO_ReadPin(Tra_H_GPIO_Port_7,Tra_H_Pin_7);
+		}
+		
+		//尾部(back)循迹模块
+		{	Trailing_data[1][0]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_0,Tra_B_Pin_0);
+			Trailing_data[1][1]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_1,Tra_B_Pin_1);
+			Trailing_data[1][2]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_2,Tra_B_Pin_2);
+			Trailing_data[1][3]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_3,Tra_B_Pin_3);
+			Trailing_data[1][4]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_4,Tra_B_Pin_4);
+			Trailing_data[1][5]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_5,Tra_B_Pin_5);
+			Trailing_data[1][6]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_6,Tra_B_Pin_6);
+			Trailing_data[1][7]=HAL_GPIO_ReadPin(Tra_B_GPIO_Port_7,Tra_B_Pin_7);
+		}
+		
+		//左侧(left)循迹模块
+		{	Trailing_data[2][0]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_0,Tra_L_Pin_0);
+			Trailing_data[2][1]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_1,Tra_L_Pin_1);
+			Trailing_data[2][2]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_2,Tra_L_Pin_2);
+			Trailing_data[2][3]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_3,Tra_L_Pin_3);
+			Trailing_data[2][4]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_4,Tra_L_Pin_4);
+			Trailing_data[2][5]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_5,Tra_L_Pin_5);
+			Trailing_data[2][6]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_6,Tra_L_Pin_6);
+			Trailing_data[2][7]=HAL_GPIO_ReadPin(Tra_L_GPIO_Port_7,Tra_L_Pin_7);
+		}
+		
+		//右侧(right)循迹模块
+		{	Trailing_data[3][0]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_0,Tra_R_Pin_0);
+			Trailing_data[3][1]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_1,Tra_R_Pin_1);
+			Trailing_data[3][2]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_2,Tra_R_Pin_2);
+			Trailing_data[3][3]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_3,Tra_R_Pin_3);
+			Trailing_data[3][4]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_4,Tra_R_Pin_4);
+			Trailing_data[3][5]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_5,Tra_R_Pin_5);
+			Trailing_data[3][6]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_6,Tra_R_Pin_6);
+			Trailing_data[3][7]=HAL_GPIO_ReadPin(Tra_R_GPIO_Port_7,Tra_R_Pin_7);
+		}
+	}
+}
+
+/**
+  * @brief debug扫描数据
+  * @param 
+  * @retval 无
+  */
+void debug_trailing(void)
+{	
+	scanf_trailing_data();
+
+	printf("\r\n头部循迹模块：");
+	for(int i = 0 ; i<8 ; i ++)
+	{ 
+	printf("%d",Trailing_data[0][i]);
+	}
+
+
+	printf("\r\n尾部循迹模块：");
+	for(int i = 0 ; i<8 ; i ++)
+	{ 
+	printf("%d",Trailing_data[1][i]);
+	}
+
+
+	printf("\r\n左侧循迹模块：");
+	for(int i = 0 ; i<8 ; i ++)
+	{ 
+	printf("%d",Trailing_data[2][i]);
+	}
+
+
+	printf("\r\n右侧循迹模块：");
+	for(int i = 0 ; i<8 ; i ++)
+	{ 
+	printf("%d",Trailing_data[3][i]);
+	}
+
+}
+/**
+  * @brief 实现左转
+  * @param 头部和尾部检测
+  * @retval 无
+  */
+
+void motor_control_Left(void)
+{	
+	scanf_trailing_data();
+	left_turn(1000);
+	if( Trailing_data[0][3]==1u && Trailing_data[0][4] == 1u )
+		{	
+			printf("正方向偏离白线");
+			printf("左转\r\n");
+			icount_Head = 1;
+		}
+	if(	Trailing_data[0][3]==0u && Trailing_data[0][4] == 0u	&&	icount_Head == 1)
+			{	
+					stop();
+					HAL_Delay(1000);
+					icount_Head =0;
+			}
+}
+/**
+  * @brief 实现左转修正
+  * @param 头部和尾部，左侧和右侧检测
+  * @retval 无
+  */
+void motor_control_Left_correct(int circle)
+{	int i_step = 0;
+	while(i_step <  circle)
+	{
+		printf("start turn left");
+		scanf_trailing_data();
+		left_turn(900);
+
+			{
+			if( Trailing_data[0][3]==1u && Trailing_data[0][4] == 1u )
+				{	printf("正方向偏离白线\r\n");
+					printf("修正左转");
+					icount_Head = 1;
+				}
+			if(Trailing_data[2][6]==0u && Trailing_data[2][7] == 0u )
+				{	printf("左侧经过白线\r\n");
+					icount_Left = 1;
+				}
+			if( Trailing_data[3][0]==0u && Trailing_data[3][1] == 0u)
+				{	printf("右侧经过白线\r\n");
+					icount_Right = 1;
+				}
+			if(icount_Head == 1)
+				{
+						if(Trailing_data[0][3]==0u && Trailing_data[0][4] == 0u && Trailing_data[1][4] == 0u )
+						{	
+							stop();
+							HAL_Delay(1000);
+							icount_Head = 0,icount_Left = 0,icount_Right = 0;//复位
+							i_step ++;
+							printf("Break Turn Left \r\n");
+						}
+
+				}
+			}
+		}
+}
+/**
+  * @brief 选择右转90°的次数
+  * @param 头部和尾部，左侧和右侧检测
+  * @retval 无
+  */
+void Trailing_control_Right_turn(int circle)
+{
+	int i;
+		for(i = 0; i < circle ; i++)
+		{
+			motor_control_Right_correct(i);
+		}
+		stop();
+}
+/**
+  * @brief 实现右转修正
+  * @param 头部和尾部，左侧和右侧检测
+  * @retval 无
+  */
+void motor_control_Right_correct(int circle)
+{	int i_step = 0;
+	while(i_step < circle)
+	{	
+		scanf_trailing_data();
+		right_turn(900);
+		
+		if( Trailing_data[0][3]==1u && Trailing_data[0][4] == 1u )
+		{	//printf("正方向偏离白线\r\n");
+//				printf("修正右转");
+				icount_Head = 1;
+			}
+		if( Trailing_data[3][6]==0u && Trailing_data[3][7] == 0u)
+			{	//printf("右侧经过白线\r\n");
+				icount_Right = 1;
+			}
+		if( Trailing_data[2][0]==0u && Trailing_data[2][1] == 0u)
+			{	//printf("左侧经过白线\r\n");
+				icount_Left = 1;
+			}
+		if(icount_Head == 1 )
+			{
+				if( Trailing_data[0][3]==0u && Trailing_data[0][4] == 0u && Trailing_data[1][4] == 0u)
+				{	
+					stop();
+					HAL_Delay(1000);
+					icount_Head = 0,icount_Left = 0,icount_Right = 0;// 标志位置零
+					i_step ++;
+					printf("Break Turn Right \r\n");
+				}
+			}
+		}
+}
+//左边电机为motor1 ,右边电机为motor2
+
+/**
+  * @brief 虚假pid
+  * @param 前后两块八路的数据修正
+  * @retval 无
+  */
+int Speed_Proportion[3]={200,160,120};
+int Speed_Proportion2[3]={200,160,120};
+static void pid_motor_speed(int dir)
+{	
+	scanf_trailing_data();
+	int v=1500,v1,v2;
+	
+	if(dir == 1)//往前  
+	{
+		v1=v-(1-Trailing_data[0][0])*Speed_Proportion[0]-(1-Trailing_data[0][1])*Speed_Proportion[1]-(1-Trailing_data[0][2])*Speed_Proportion[2]\
+		+(1-Trailing_data[0][7])*Speed_Proportion[0]+(1-Trailing_data[0][6])*Speed_Proportion[1]+(1-Trailing_data[0][5])*Speed_Proportion[2]\
+		+(1-Trailing_data[1][0])*Speed_Proportion2[0]+(1-Trailing_data[1][1])*Speed_Proportion2[1]+(1-Trailing_data[1][2])*Speed_Proportion2[2]\
+		-(1-Trailing_data[1][7])*Speed_Proportion2[0]-(1-Trailing_data[1][6])*Speed_Proportion2[1]-(1-Trailing_data[1][5])*Speed_Proportion2[2];
+		
+		v2=v+(1-Trailing_data[0][0])*Speed_Proportion[0]+(1-Trailing_data[0][1])*Speed_Proportion[1]+(1-Trailing_data[0][2])*Speed_Proportion[2]\
+		-(1-Trailing_data[0][7])*Speed_Proportion[0]-(1-Trailing_data[0][6])*Speed_Proportion[1]-(1-Trailing_data[0][5])*Speed_Proportion[2]\
+		-(1-Trailing_data[1][0])*Speed_Proportion2[0]-(1-Trailing_data[1][1])*Speed_Proportion2[1]-(1-Trailing_data[1][2])*Speed_Proportion2[2]\
+		+(1-Trailing_data[1][7])*Speed_Proportion2[0]+(1-Trailing_data[1][6])*Speed_Proportion2[1]+(1-Trailing_data[1][5])*Speed_Proportion2[2];
+
+		set_motor1_speed(v1);
+		set_motor2_speed(v2);
+	}
+	if(dir == 0)//往后
+	{
+		v1=v-(1-Trailing_data[0][0])*Speed_Proportion[0]-(1-Trailing_data[0][1])*Speed_Proportion[1]-(1-Trailing_data[0][2])*Speed_Proportion[2]\
+		+(1-Trailing_data[0][7])*Speed_Proportion[0]+(1-Trailing_data[0][6])*Speed_Proportion[1]+(1-Trailing_data[0][5])*Speed_Proportion[2]\
+		+(1-Trailing_data[1][0])*Speed_Proportion2[0]+(1-Trailing_data[1][1])*Speed_Proportion2[1]+(1-Trailing_data[1][2])*Speed_Proportion2[2]\
+		-(1-Trailing_data[1][7])*Speed_Proportion2[0]-(1-Trailing_data[1][6])*Speed_Proportion2[1]-(1-Trailing_data[1][5])*Speed_Proportion2[2]\
+		;	
+		
+		v2=v+(1-Trailing_data[0][0])*Speed_Proportion[0]+(1-Trailing_data[0][1])*Speed_Proportion[1]+(1-Trailing_data[0][2])*Speed_Proportion[2]\
+		-(1-Trailing_data[0][7])*Speed_Proportion[0]-(1-Trailing_data[0][6])*Speed_Proportion[1]-(1-Trailing_data[0][5])*Speed_Proportion[2]\
+		-(1-Trailing_data[1][0])*Speed_Proportion2[0]-(1-Trailing_data[1][1])*Speed_Proportion2[1]-(1-Trailing_data[1][2])*Speed_Proportion2[2]\
+		+(1-Trailing_data[1][7])*Speed_Proportion2[0]+(1-Trailing_data[1][6])*Speed_Proportion2[1]+(1-Trailing_data[1][5])*Speed_Proportion2[2]\
+		;
+
+		set_motor1_speed(v1);
+		set_motor2_speed(v2);
+	}
+}
+/**
+  * @brief 实现修正向前直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_Gostraight_ahead()
+{		
+	set_motor1_enable();
+	set_motor2_enable();
+	
+	set_motor1_direction(MOTOR_FWD);
+	set_motor2_direction(MOTOR_REV);
+	pid_motor_speed(1);
+}
+
+/**
+  * @brief 实现修正向后直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_Gostraight_back()
+{		
+	set_motor1_enable();
+	set_motor2_enable();
+
+	set_motor1_direction(MOTOR_REV);
+	set_motor2_direction(MOTOR_FWD);
+	pid_motor_speed(0);
+}
+
+/**
+  * @brief 实现修正向前一格直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_One_Step_ahead(void)
+{	i_step=0;
+
+	while(i_step < 1)
+	{	
+		printf("start");
+		scanf_trailing_data();
+		motor_control_Gostraight_ahead();
+		
+		if( Trailing_data[1][1] == 0u && Trailing_data[1][6]== 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;
+			}
+		if( Trailing_data[3][6] )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+		if(  Trailing_data[0][1] == 0u && Trailing_data[0][6] == 0u  )
+			{	
+//				printf("小车前方经过白线\r\n");
+				icount_Head = 1;//侧前方经过白线
+			}		
+		if(  Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 2;//侧前方经过白线
+			}
+			//printf("back : %d, edge: %d, head: %d", icount_back, icount_edge, icount_Head);
+		if( icount_edge == 2 && icount_back == 1 && icount_Head == 1)
+			{
+				if( Trailing_data[3][3] == 0u && Trailing_data[2][3] == 0u  )
+				{	
+					HAL_Delay(50);
+					stop();
+					HAL_Delay(1000);
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+					i_step++;
+					printf("break Gostraight \r\n");
+				}
+			}	
+			printf("end");
+		}
+}
+
+/**
+  * @brief 实现修正向后一格直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_One_Step_back(void)
+{	
+	i_step=0;
+	while(i_step < 1)
+	{	
+		scanf_trailing_data();
+		motor_control_Gostraight_back();
+		
+		if( Trailing_data[0][0]==0u && Trailing_data[0][1] == 0u && Trailing_data[0][6] == 0u && Trailing_data[0][7] == 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车前方经过白线\r\n");
+				icount_Head = 1;
+			}
+		if(  Trailing_data[3][1]==0u && Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+		if( Trailing_data[1][0]==0u && Trailing_data[1][1] == 0u && Trailing_data[1][6] == 0u && Trailing_data[1][7] == 0u )
+			{	
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;//侧前方经过白线
+			}		
+		if( Trailing_data[3][6]==0u && Trailing_data[2][6] == 0u )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 2;//侧前方经过白线
+			}
+		if( icount_edge == 2 && icount_back == 1 && icount_Head == 1)
+			{
+				if( Trailing_data[2][4] == 0u && Trailing_data[3][4] == 0u )
+				{	
+					HAL_Delay(50);
+					stop();
+					HAL_Delay(1000);
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+					i_step++;
+					printf("break GoBack \r\n");
+				}
+			}	
+		}	
+	
+}
+
+/**
+  * @brief 实现修正向前固定格直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_Certain_Step_ahead(int c_step)
+{	i_step=0;
+		icount_edge = 0, icount_Head = 0, icount_back = 0;
+	while(i_step < c_step)
+	{	
+		printf("start");
+		scanf_trailing_data();
+		motor_control_Gostraight_ahead();
+
+		if( Trailing_data[1][0]==0u && Trailing_data[1][1] == 0u && Trailing_data[1][6] == 0u && Trailing_data[1][7] == 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;
+			}
+		if( Trailing_data[3][6]==0u && Trailing_data[2][6] == 0u )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+		if( Trailing_data[0][0]==0u && Trailing_data[0][1] == 0u && Trailing_data[0][6] == 0u && Trailing_data[0][7] == 0u )
+			{	
+//				printf("小车前方经过白线\r\n");
+				icount_Head = 1;//侧前方经过白线
+			}		
+		if( Trailing_data[3][1]==0u && Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 2;//侧前方经过白线
+			}
+			//printf("back : %d, edge: %d, head: %d", icount_back, icount_edge, icount_Head);
+		if( icount_edge == 2  && icount_back == 1 && icount_Head == 1)
+			{
+				if( Trailing_data[3][3] == 0u && Trailing_data[2][3] == 0u  )
+				{	
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+						        HAL_Delay(100);
+					i_step++;
+					printf("break Gostraight \r\n");
+				}
+			}	
+		}
+			stop();
+			HAL_Delay(1000);
+			printf("end");
+}
+
+/**
+  * @brief 实现修正向后固定格直行
+  * @param 
+  * @retval 无
+  */
+void motor_control_Certain_Step_back(int c_step)
+{	
+	i_step=0;
+	icount_edge = 0, icount_Head = 0, icount_back = 0;
+	while(i_step < c_step)
+	{	
+		scanf_trailing_data();
+		motor_control_Gostraight_back();
+		
+		if( Trailing_data[0][0]==0u && Trailing_data[0][1] == 0u && Trailing_data[0][6] == 0u && Trailing_data[0][7] == 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车前方经过白线\r\n");
+				icount_Head = 1;
+			}
+		if(  Trailing_data[3][1]==0u && Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+		if( Trailing_data[1][0]==0u && Trailing_data[1][1] == 0u && Trailing_data[1][6] == 0u && Trailing_data[1][7] == 0u )
+			{	
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;//侧前方经过白线
+			}		
+		if( Trailing_data[3][6]==0u && Trailing_data[2][6] == 0u )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 1;//侧前方经过白线
+			}
+		if( icount_edge == 2 && icount_back ==1 && icount_Head == 1)
+			{
+				if( Trailing_data[2][4] == 0u && Trailing_data[3][4] == 0u )
+				{	
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+						        HAL_Delay(100);
+					i_step++;
+					printf("break GoBack \r\n");
+				}
+			}	
+		}	
+					stop();
+					HAL_Delay(1000);
+}
+
+/**
+  * @brief 实现修正启动第一步
+  * @param 
+  * @retval 无
+  */
+void first_step(void)
+{	i_step=0;
+		icount_edge = 0, icount_Head = 0, icount_back = 0;
+	while(i_step < 1)
+	{	
+		printf("start");
+		scanf_trailing_data();
+		motor_control_Gostraight_ahead();
+
+		if( Trailing_data[0][0]==0u && Trailing_data[0][1] == 0u && Trailing_data[0][6] == 0u && Trailing_data[0][7] == 0u )
+			{	
+//				printf("小车前方经过白线\r\n");
+				icount_Head = 1;//侧前方经过白线
+			}		
+		if( Trailing_data[3][1]==0u && Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 2;//侧前方经过白线
+			}
+			//printf("back : %d, edge: %d, head: %d", icount_back, icount_edge, icount_Head);
+		if( icount_edge == 2  && icount_Head == 1 )
+			{
+				if( Trailing_data[3][3] == 0u && Trailing_data[2][3] == 0u  )
+				{	
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+						HAL_Delay(100);
+					i_step++;
+					printf("break Gostraight \r\n");
+				}
+			}	
+		}
+			stop();
+			HAL_Delay(1000);
+			printf("end");
+}
+
+/**
+  * @brief 实现修正靠近E
+  * @param 
+  * @retval 无
+  */
+void motor_control_close_ahead(void)
+{	i_step=0;
+
+	while(i_step < 1)
+	{	
+		printf("start");
+		scanf_trailing_data();
+		motor_control_Gostraight_ahead();
+		
+		if( Trailing_data[1][0]==0u && Trailing_data[1][1] == 0u && Trailing_data[1][6] == 0u && Trailing_data[1][7] == 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;
+			}
+		if( Trailing_data[3][6]==0u && Trailing_data[2][6] == 0u )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+		if( Trailing_data[3][1]==0u && Trailing_data[2][1] == 0u )
+			{	
+//				printf("小车侧前方经过白线\r\n");
+//				printf("-----------------\r\n");
+				icount_edge = 2;//侧前方经过白线
+			}
+			//printf("back : %d, edge: %d, head: %d", icount_back, icount_edge, icount_Head);
+		if( icount_edge == 2 && icount_back == 1)
+			{
+				if( Trailing_data[3][3] == 0u && Trailing_data[2][3] == 0u  )
+				{	
+					HAL_Delay(100);
+					stop();
+					HAL_Delay(1000);
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+					i_step++;
+					printf("break Gostraight \r\n");
+				}
+			}	
+			printf("end");
+		}
+}
+
+/**
+  * @brief 实现修正远离E
+  * @param 
+  * @retval 无
+  */
+void motor_control_away_back(void)
+{	i_step=0;
+
+	while(i_step < 1)
+	{	
+		printf("start");
+		scanf_trailing_data();
+		motor_control_Gostraight_ahead();
+		
+		if( Trailing_data[1][0]==0u && Trailing_data[1][1] == 0u && Trailing_data[1][6] == 0u && Trailing_data[1][7] == 0u )
+			{	
+//				printf("-----------------\r\n");
+//				printf("小车后方经过白线\r\n");
+				icount_back = 1;
+			}
+		if( Trailing_data[3][6]==0u && Trailing_data[2][6] == 0u )
+			{	
+//				printf("小车侧后方经过白线\r\n");
+//				printf("edge: %d", icount_edge);
+				icount_edge = 1;//侧后方经过白线
+			}
+			}		
+			//printf("back : %d, edge: %d, head: %d", icount_back, icount_edge, icount_Head);
+		if( icount_edge == 2 && icount_back == 1)
+			{
+				if( Trailing_data[2][4] == 0u && Trailing_data[3][4] == 0u )
+				{	
+					HAL_Delay(50);
+					stop();
+					HAL_Delay(1000);
+					icount_edge = 0, icount_Head = 0, icount_back = 0;// 标志位置零
+					i_step++;
+					printf("break Gostraight \r\n");
+				}
+			}	
+			printf("end");
+		}

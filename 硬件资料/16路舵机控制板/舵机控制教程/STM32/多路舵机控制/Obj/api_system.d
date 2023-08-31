@@ -1,0 +1,9 @@
+..\obj\api_system.o: ..\Api\Api_System.c
+..\obj\api_system.o: ..\User\include.h
+..\obj\api_system.o: ..\User\App.h
+..\obj\api_system.o: ..\Api\Api_System.h
+..\obj\api_system.o: ..\Api\stm32f10x_type.h
+..\obj\api_system.o: ..\Api\stm32f10x_map.h
+..\obj\api_system.o: ..\Api\stm32f10x_conf.h
+..\obj\api_system.o: ..\Api\cortexm3_macro.h
+..\obj\api_system.o: ..\Api\stm32f10x_nvic.h
